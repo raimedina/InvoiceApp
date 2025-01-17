@@ -1,0 +1,51 @@
+@import '../../styles/global.module.css';
+
+:global(.light) {
+  background-color: var(--color-white);
+  color: var(--color-black);
+  transition: background-color 0.3s ease, color 0.3s ease;
+  min-height: 100vh;
+}
+
+:global(.dark) {
+  background-color: var(--color-black);
+  color: var(--color-white);
+  transition: background-color 0.3s ease, color 0.3s ease;
+  min-height: 100vh;
+}
+
+.toggle {
+  width: 60px;
+  height: 60px;
+  font-size: var(--font-size-icon);
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+  box-shadow: var(--box-shadow);
+  border: none;
+  outline: none;
+  background-color: var(--color-primary);
+  color: var(--color-white);
+}
+
+.toggle:hover {
+  background-color: var(--color-primary-hover);
+  transform: scale(1.1);
+}
+
+.toggle:active {
+  transform: scale(0.95);
+}
+
+.toggle.dark {
+  background-color: var(--color-gray-dark);
+  color: var(--color-white);
+}
+
+.toggle.light {
+  background-color: var(--color-gray-light);
+  color: var(--color-black);
+}

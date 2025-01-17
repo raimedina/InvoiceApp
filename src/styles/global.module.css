@@ -1,0 +1,24 @@
+@import './variables.module.css';
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--color-white);
+  color: var(--color-black);
+  font-family: Arial, sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+main {
+  padding-top: 180px; 
+}
+
+body.light {
+  background-color: var(--color-white);
+  color: var(--color-black);
+}
+
+body.dark {
+  background-color: var(--color-black);
+  color: var(--color-white);
+}

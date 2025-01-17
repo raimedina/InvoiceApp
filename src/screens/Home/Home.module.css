@@ -1,0 +1,24 @@
+@import '../../styles/global.module.css';
+
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 120px;
+  padding-inline: 20px;
+  
+}
+
+
+.actions {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  width: 100%;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+

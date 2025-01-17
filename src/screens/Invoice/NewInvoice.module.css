@@ -1,0 +1,139 @@
+@import '../../styles/global.module.css';
+
+
+.container {
+  max-width: 800px;
+  margin: 120px auto 40px;
+  padding: 40px;
+  background-color: var(--card-bg);
+  color: var(--card-text);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--box-shadow);
+  border: 1px solid var(--card-border);
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+
+body.dark .container {
+  background-color: var(--card-bg);
+  border: 2px solid var(--color-white);
+  box-shadow: 0 4px 20px rgba(255, 255, 255, 0.2); 
+}
+
+
+h2 {
+  text-align: center;
+  color: var(--color-primary);
+  margin-bottom: 20px;
+  transition: color 0.3s ease;
+}
+
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 14px;
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--card-border);
+  background-color: var(--card-bg);
+  color: var(--card-text);
+  font-size: 1.3rem;
+  box-sizing: border-box;
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  height: 48px;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2210%22%20height%3D%227%22%20viewBox%3D%220%200%2010%207%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M0%200l5%207%205-7z%22%20fill%3D%22%23ccc%22/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 10px;
+  cursor: pointer;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--color-gray-dark);
+}
+
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 5px var(--color-primary);
+}
+
+
+.buttonGroup {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+
+.submitButton {
+  flex: 1;
+  padding: var(--padding-md);
+  background-color: var(--color-green);
+  color: var(--color-black);
+  border: 2px solid transparent;
+  border-radius: var(--border-radius-lg);
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1.3rem;
+  transition: background-color 0.3s ease, transform 0.2s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.submitButton:hover {
+  background-color: var(--color-primary-hover);
+  transform: translateY(-2px);
+}
+
+.cancelButton {
+  font-size: 1.3rem;
+  flex: 1;
+  padding: var(--padding-md);
+  background-color: var(--color-gray-dark);
+  color: var(--color-white);
+  border: 2px solid transparent;
+  border-radius: var(--border-radius-lg);
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease, transform 0.2s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.cancelButton:hover {
+  background-color: var(--color-primary-hover);
+  transform: translateY(-2px);
+}
+
+body.dark .submitButton,
+body.dark .cancelButton {
+  border: 2px solid var(--color-white); 
+  box-shadow: 0 2px 6px rgba(255, 255, 255, 0.2);
+}
+
+body.dark .submitButton:hover,
+body.dark .cancelButton:hover {
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.3);
+}

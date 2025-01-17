@@ -1,0 +1,97 @@
+@import '../../styles/global.module.css';
+
+
+.container {
+  max-width: 800px;
+  margin-top: 120px;
+  margin: 120px auto 40px;
+  padding: 40px;
+  background-color: var(--card-bg);
+  color: var(--card-text);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--box-shadow);
+  border: 1px solid var(--card-border);
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+
+h2 {
+  text-align: center;
+  color: var(--color-primary);
+  margin-bottom: 20px;
+}
+
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+input,
+select {
+  width: 100%;
+  padding: 14px;
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--card-border);
+  background-color: var(--card-bg);
+  color: var(--card-text);
+  font-size: 1.2rem;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+input:focus,
+select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 5px var(--color-primary);
+}
+
+
+.error {
+  color: var(--color-red);
+  font-size: 0.9rem;
+}
+
+.buttonGroup {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+ 
+}
+
+.updateButton {
+  flex: 1;
+  padding: var(--padding-md);
+  background-color: var(--color-green);
+  color: var(--color-black);
+  border: none;
+  border-radius: var(--border-radius-lg);
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  font-size: 1.4rem;
+}
+
+.updateButton:hover {
+  background-color: var(--color-primary-hover);
+  transform: translateY(-2px);
+}
+
+.cancelButton {
+  flex: 1;
+  padding: var(--padding-md);
+  background-color: var(--color-gray-dark);
+  color: var(--color-white);
+  border: none;
+  border-radius: var(--border-radius-lg);
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  font-size: 1.4rem;
+}
+
+.cancelButton:hover {
+  background-color: var(--color-primary-hover);
+  transform: translateY(-2px);
+}

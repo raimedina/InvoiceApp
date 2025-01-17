@@ -1,0 +1,157 @@
+@import '../../../styles/global.module.css';
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+
+.modal {
+  background-color: var(--color-white);
+  padding: 40px;
+  border-radius: var(--border-radius-lg);
+  width: 500px;
+  max-width: 90%;
+  max-height: 90%;
+  box-shadow: var(--box-shadow);
+  position: relative;
+  overflow-y: auto;
+  transition: transform 0.3s ease;
+  transform: scale(1);
+}
+
+
+.modal h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: var(--font-size-lg);
+  font-weight: bold;
+  color: var(--color-black);
+}
+
+
+.inputGroup {
+  margin-bottom: 20px;
+}
+
+
+.modal label {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 8px;
+  font-size: var(--font-size-base);
+  color: var(--color-gray-dark);
+}
+
+
+.modal input,
+.modal select {
+  width: 100%;
+  padding: var(--padding-sm);
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--color-gray-light);
+  font-size: var(--font-size-base);
+  background-color: var(--color-gray-light);
+  transition: border-color 0.3s ease;
+}
+
+.modal input:focus,
+.modal select:focus {
+  border-color: var(--color-primary);
+  outline: none;
+}
+
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 30px;
+  gap: var(--padding-md);
+}
+
+
+.clearBtn,
+.applyBtn {
+  flex: 1;
+  padding: var(--padding-md);
+  border-radius: var(--border-radius-md);
+  border: none;
+  cursor: pointer;
+  font-size: var(--font-size-base);
+  font-weight: bold;
+  transition: transform 0.2s ease, background-color 0.3s ease;
+}
+
+.clearBtn {
+  background-color: #f44336;
+  color: var(--color-white);
+}
+
+.applyBtn {
+  background-color: var(--color-green);
+  color: var(--color-white);
+}
+
+.clearBtn:hover,
+.applyBtn:hover {
+  transform: scale(1.05);
+}
+
+
+.closeButton {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-lg);
+  cursor: pointer;
+  box-shadow: var(--box-shadow);
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.closeButton:hover {
+  background-color: var(--color-primary-hover);
+  transform: scale(1.1);
+}
+
+
+@media (max-width: 768px) {
+  .modal {
+    width: 90%;
+    padding: 20px;
+  }
+
+  .modal h2 {
+    font-size: var(--font-size-base);
+  }
+
+  .clearBtn,
+  .applyBtn {
+    font-size: var(--font-size-base);
+    padding: var(--padding-sm);
+  }
+}
+
+@media (max-height: 600px) {
+  .modal {
+    max-height: 80%;
+    overflow-y: auto;
+  }
+}

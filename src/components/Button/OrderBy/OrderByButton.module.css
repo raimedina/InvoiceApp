@@ -1,0 +1,131 @@
+@import '../../../styles/variables.module.css';
+
+.orderByContainer {
+  display: flex;
+  align-items: center;
+  gap: var(--padding-sm);
+  position: relative;
+}
+
+
+.orderByButton {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--padding-sm);
+  padding: var(--padding-md);
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  border: none;
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  font-size: var(--font-size-lg);
+  font-weight: bold;
+  width: auto;
+  min-width: 330px;
+  box-shadow: var(--box-shadow);
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.orderByButton:hover {
+  background-color: var(--color-primary-hover);
+  transform: translateY(-2px);
+}
+
+body.dark .orderByButton {
+  background-color: var(--card-bg);
+  color: var(--color-white);
+  border: 1px solid var(--color-gray-light);
+}
+
+body.dark .orderByButton:hover {
+  background-color: var(--color-gray-dark);
+}
+
+
+.dropdownIcon {
+  font-size: var(--font-size-icon);
+}
+
+.sortDirectionButton {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  border: none;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  margin: 0;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  cursor: pointer;
+  box-shadow: var(--box-shadow);
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.sortDirectionButton:hover {
+  background-color: var(--color-primary-hover);
+  transform: translateY(-2px);
+}
+
+body.dark .sortDirectionButton {
+  background-color: var(--card-bg);
+  color: var(--color-white);
+  border: 1px solid var(--color-gray-light);
+}
+
+body.dark .sortDirectionButton:hover {
+  background-color: var(--color-gray-dark);
+}
+
+
+.sortIcon {
+  font-size: 1.8rem;
+  line-height: 1;
+}
+
+
+.dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: var(--color-white);
+  color: var(--color-black);
+  box-shadow: var(--box-shadow);
+  border-radius: var(--border-radius-lg);
+  list-style: none;
+  padding: var(--padding-sm) 0;
+  width: 240px;
+  z-index: 10;
+}
+
+body.dark .dropdown {
+  background-color: var(--card-bg);
+  color: var(--color-white); 
+  border: 1px solid var(--color-gray-light);
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
+}
+
+
+.dropdown li {
+  padding: var(--padding-md);
+  cursor: pointer;
+  font-size: var(--font-size-lg);
+  color: var(--color-black);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body.dark .dropdown li {
+  color: var(--color-white); 
+}
+
+.dropdown li:hover {
+  background-color: var(--color-gray-light);
+}
+
+body.dark .dropdown li:hover {
+  background-color: var(--color-gray-dark);
+  color: var(--color-white); 
+}

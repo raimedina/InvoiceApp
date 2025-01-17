@@ -1,0 +1,80 @@
+@import '../../styles/global.module.css';
+
+
+.invoiceList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+  transition: max-height 0.5s ease-in-out;
+  padding-bottom: 20px;
+}
+
+
+.loadMoreContainer {
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
+  align-items: center;
+}
+
+
+.loadMoreBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background-color: var(--color-primary, #4CAF50);
+  color: var(--color-white, #FFFFFF);
+  border: none;
+  padding: 16px 32px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border-radius: var(--border-radius-lg, 12px);
+  cursor: pointer;
+  box-shadow: var(--box-shadow, 0 4px 12px rgba(0, 0, 0, 0.2));
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  margin-bottom: 50px;
+}
+
+.loadMoreBtn:hover {
+  background-color: var(--color-primary-hover, #45a049);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+}
+
+
+.icon {
+  font-size: 1.8rem;
+  transition: transform 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loadMoreBtn:hover .icon {
+  transform: translateY(3px);
+}
+
+body.dark .loadMoreBtn {
+  background-color: var(--color-gray-dark, #444);
+  color: var(--color-white, #fff);
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
+}
+
+body.dark .loadMoreBtn:hover {
+  background-color: var(--color-gray-light, #666);
+  box-shadow: 0 6px 16px rgba(255, 255, 255, 0.2);
+}
+
+
+@media (max-width: 768px) {
+  .loadMoreBtn {
+    width: 100%;
+  }
+
+  .invoiceList {
+    flex-direction: column;
+    align-items: center;
+  }
+}

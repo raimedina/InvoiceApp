@@ -1,0 +1,35 @@
+@import '../../../styles/global.module.css';
+
+.filterButton {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: var(--padding-md);
+  background-color: var(--color-green);
+  color: var(--color-white);
+  border: none;
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  font-size: var(--font-size-lg);
+  font-weight: bold;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  min-width: 340px;
+  box-shadow: var(--box-shadow);
+}
+
+.filterButton:hover {
+  background-color: var(--color-green-dark);
+  transform: translateY(-2px);
+}
+
+.icon {
+  font-size: var(--font-size-icon);
+}
+
+@media (max-width: 768px) {
+  .filterButton {
+    width: 100%; 
+  
+  }
+}
