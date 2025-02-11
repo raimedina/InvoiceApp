@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FiChevronDown, FiArrowUp, FiArrowDown } from "react-icons/fi";
 import { setSortBy, toggleSortDirection } from "../../../redux/filterSlice";
@@ -6,18 +6,14 @@ import styles from "./OrderByButton.module.css";
 
 const OrderByButton = () => {
   const dispatch = useDispatch();
-  const sortBy = useSelector((state) => state.filter.sortBy);
-  const sortDirection = useSelector((state) => state.filter.sortDirection);
+  const sortBy = useSelector((state) => state.filter.sortBy) || "clientName";
+  const sortDirection =
+    useSelector((state) => state.filter.sortDirection) || "asc";
+
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  useEffect(() => {
-    if (!sortBy) {
-      dispatch(setSortBy("clientName"));
-    }
-  }, [dispatch, sortBy]);
-
   const handleToggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
+    setIsDropdownOpen((prev) => !prev);
   };
 
   const handleSelectOrder = (order) => {
@@ -46,12 +42,20 @@ const OrderByButton = () => {
 
   return (
     <div className={styles.orderByContainer}>
-      <button onClick={handleToggleDropdown} className={styles.orderByButton}>
+      <button
+        onClick={handleToggleDropdown}
+        className={styles.orderByButton}
+        aria-label="Order By"
+      >
         <span>Order By: {getOrderLabel()}</span>
         <FiChevronDown className={styles.dropdownIcon} />
       </button>
 
-      <button onClick={handleToggleDirection} className={styles.sortDirectionButton} aria-label="Toggle Sort Direction">
+      <button
+        onClick={handleToggleDirection}
+        className={styles.sortDirectionButton}
+        aria-label="Toggle Sort Direction"
+      >
         {sortDirection === "asc" ? (
           <FiArrowUp className={styles.sortIcon} />
         ) : (
@@ -61,7 +65,9 @@ const OrderByButton = () => {
 
       {isDropdownOpen && (
         <ul className={styles.dropdown}>
-          <li onClick={() => handleSelectOrder("clientName")}>Client Name (A-Z)</li>
+          <li onClick={() => handleSelectOrder("clientName")}>
+            Client Name (A-Z)
+          </li>
           <li onClick={() => handleSelectOrder("amount")}>Amount</li>
           <li onClick={() => handleSelectOrder("issueDate")}>Issue Date</li>
           <li onClick={() => handleSelectOrder("dueDate")}>Due Date</li>

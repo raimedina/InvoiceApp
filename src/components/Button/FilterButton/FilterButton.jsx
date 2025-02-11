@@ -12,6 +12,7 @@ const FilterButton = () => {
   const handleToggle = () => {
     dispatch(toggleFilter());
   };
+  
 
   return (
     <div className={styles.actionsContainer}>
@@ -20,7 +21,11 @@ const FilterButton = () => {
         <FiSliders className={styles.icon} />
       </button>
 
-      {isFilterOpen && <FilterModal />}
+      {isFilterOpen && (
+        <div className={styles.modalContainer}>
+          <FilterModal />
+        </div>
+      )}
     </div>
   );
 };

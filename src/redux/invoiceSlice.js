@@ -1,26 +1,71 @@
-import { createSlice } from "@reduxjs/toolkit";
-import data from "../data/data.json";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-const loadFromLocalStorage = () => {
-  try {
-    const storedData = localStorage.getItem("invoices");
-    return storedData ? JSON.parse(storedData) : data;
-  } catch (error) {
-    console.error("Failed to load invoices from localStorage:", error);
-    return data;
-  }
-};
+const API_URL = "http://localhost:5001/invoices";
 
-const saveToLocalStorage = (invoices) => {
-  try {
-    localStorage.setItem("invoices", JSON.stringify(invoices));
-  } catch (error) {
-    console.error("Failed to save invoices to localStorage:", error);
+export const fetchInvoices = createAsyncThunk("invoice/fetchInvoices", async () => {
+  const response = await fetch(API_URL);
+  if (!response.ok) {
+    throw new Error("Failed to fetch invoices from API");
   }
-};
+  const data = await response.json();
+  return data.map((invoice) => ({
+    ...invoice,
+    invoiceId: invoice.invoiceId || invoice.id || "N/A",
+  }));
+});
+
+export const addInvoice = createAsyncThunk("invoice/addInvoice", async (invoiceData) => {
+  const response = await fetch(API_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(invoiceData),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to add invoice");
+  }
+  return await response.json();
+});
+
+export const updateInvoice = createAsyncThunk(
+  "invoice/updateInvoice",
+  async ({ invoiceId, updatedData }) => {
+
+    const response = await fetch(`http://localhost:5001/invoices/${invoiceId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updatedData),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to update invoice");
+    }
+
+    return await response.json();
+  }
+);
+
+
+export const deleteInvoice = createAsyncThunk("invoice/deleteInvoice", async (invoiceId, { rejectWithValue }) => {
+  if (!invoiceId) {
+    console.error("❌ Attempted to delete an invoice with an invalid ID!");
+    return rejectWithValue("Invalid ID");
+  }
+
+  const response = await fetch(`${API_URL}/${invoiceId}`, {
+    method: "DELETE",
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    console.error("❌ Error deleting invoice:", errorData);
+    return rejectWithValue(errorData);
+  }
+  return invoiceId;
+});
 
 const initialState = {
-  list: loadFromLocalStorage(),
+  list: [],
   status: "idle",
   error: null,
   visibleInvoices: 8,
@@ -30,118 +75,40 @@ const invoiceSlice = createSlice({
   name: "invoice",
   initialState,
   reducers: {
-    loadInvoices: (state) => {
-      if (state.status === "idle" || state.list.length === 0) {
-        state.status = "loading";
-        try {
-          const invoices = loadFromLocalStorage();
-          state.list = Array.isArray(invoices) ? invoices : [];
-          saveToLocalStorage(state.list);
-          state.status = "succeeded";
-        } catch (error) {
-          state.status = "failed";
-          state.error = error.message;
-        }
-      }
-    },
-
     loadMoreInvoices: (state) => {
       if (state.visibleInvoices < state.list.length) {
         state.visibleInvoices += 6;
       }
     },
-
-    addInvoice: (state, action) => {
-      const {
-        invoiceNumber,
-        clientName,
-        clientEmail,
-        amount,
-        currency,
-        discount,
-        tax,
-        status,
-        issueDate,
-        dueDate,
-        paymentMethod,
-        category,
-        tags,
-        notes,
-      } = action.payload;
-
-      const newInvoice = {
-        invoiceId: Date.now().toString(),
-        invoiceNumber,
-        clientName,
-        clientEmail,
-        amount: parseFloat(amount),
-        currency: currency || "USD",
-        discount: parseFloat(discount) || 0,
-        tax: parseFloat(tax) || 0,
-        status: ["Pending", "Paid", "Overdue"].includes(status) ? status : "Pending",
-        issueDate,
-        dueDate,
-        paymentMethod: paymentMethod || "Cash",
-        category: category || "Development",
-        tags: Array.isArray(tags) ? tags : tags.split(",").map((tag) => tag.trim()),
-        notes,
-        paymentDate: status === "Paid" ? new Date().toISOString() : null,
-      };
-
-      state.list.push(newInvoice);
-      saveToLocalStorage(state.list);
-      state.status = "succeeded";
-    },
-
-    updateInvoice: (state, action) => {
-      const { invoiceId, updatedData } = action.payload;
-      const index = state.list.findIndex((invoice) => invoice.invoiceId === invoiceId);
-
-      if (index !== -1) {
-        state.list[index] = {
-          ...state.list[index],
-          ...updatedData,
-          amount: parseFloat(updatedData.amount),
-          discount: parseFloat(updatedData.discount),
-          tax: parseFloat(updatedData.tax),
-          tags: Array.isArray(updatedData.tags)
-            ? updatedData.tags
-            : updatedData.tags.split(",").map((tag) => tag.trim()),
-          paymentDate: updatedData.status === "Paid" ? new Date().toISOString() : state.list[index].paymentDate,
-        };
-        saveToLocalStorage(state.list);
-        state.status = "updated";
-      }
-    },
-
-    deleteInvoice: (state, action) => {
-      const invoiceIdToDelete = action.payload;
-      state.list = state.list.filter((invoice) => invoice.invoiceId !== invoiceIdToDelete);
-      saveToLocalStorage(state.list);
-      state.status = "deleted";
-    },
-
-    markInvoiceAsPaid: (state, action) => {
-      const invoiceId = action.payload;
-      const invoice = state.list.find((inv) => inv.invoiceId === invoiceId);
-
-      if (invoice) {
-        invoice.status = "Paid";
-        invoice.paymentDate = new Date().toISOString();
-        saveToLocalStorage(state.list);
-        state.status = "updated";
-      }
-    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchInvoices.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(fetchInvoices.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.list = action.payload;
+      })
+      .addCase(fetchInvoices.rejected, (state, action) => {
+        console.error("❌ Failed to fetch invoices:", action.error.message);
+        state.status = "failed";
+        state.error = action.error.message;
+      })
+      .addCase(addInvoice.fulfilled, (state, action) => {
+        state.list.push(action.payload);
+      })
+      .addCase(updateInvoice.fulfilled, (state, action) => {
+        const index = state.list.findIndex((invoice) => invoice.invoiceId === action.payload.invoiceId);
+        if (index !== -1) {
+          state.list[index] = action.payload;
+        }
+      })
+      .addCase(deleteInvoice.fulfilled, (state, action) => {
+        state.list = state.list.filter((invoice) => invoice.invoiceId !== action.payload);
+      });
   },
 });
 
-export const {
-  loadInvoices,
-  loadMoreInvoices,
-  addInvoice,
-  updateInvoice,
-  deleteInvoice,
-  markInvoiceAsPaid,
-} = invoiceSlice.actions;
-
+export const { loadMoreInvoices } = invoiceSlice.actions;
 export default invoiceSlice.reducer;

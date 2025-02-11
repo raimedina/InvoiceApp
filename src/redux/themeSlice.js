@@ -1,17 +1,32 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
+const loadThemeFromLocalStorage = () => {
+  if (typeof window !== "undefined") {
+    try {
+      return localStorage.getItem("theme") === "dark";
+    } catch (error) {
+      console.error("Erro ao acessar localStorage:", error);
+      return false;
+    }
+  }
+  return false;
+};
 
 const initialState = {
-  darkMode: localStorage.getItem('theme') === 'dark' ? true : false,
+  darkMode: loadThemeFromLocalStorage(),
 };
 
 const themeSlice = createSlice({
-  name: 'theme',
+  name: "theme",
   initialState,
   reducers: {
     toggleTheme: (state) => {
       state.darkMode = !state.darkMode;
-      localStorage.setItem('theme', state.darkMode ? 'dark' : 'light'); 
+      try {
+        localStorage.setItem("theme", state.darkMode ? "dark" : "light");
+      } catch (error) {
+        console.error("Erro ao salvar tema no localStorage:", error);
+      }
     },
   },
 });

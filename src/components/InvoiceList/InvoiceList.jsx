@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { loadInvoices, loadMoreInvoices } from "../../redux/invoiceSlice";
+import { fetchInvoices, loadMoreInvoices } from "../../redux/invoiceSlice";
 import { FiChevronDown } from "react-icons/fi";
 import Card from "../Card/Card";
 import styles from "./InvoiceList.module.css";
@@ -16,49 +16,74 @@ const InvoiceList = () => {
 
   useEffect(() => {
     if (status === "idle" || invoices.length === 0) {
-      dispatch(loadInvoices());
+      dispatch(fetchInvoices());
     }
   }, [status, dispatch, invoices.length]);
 
   const filteredInvoices = invoices
     .filter((invoice) => {
-      return (
-        (filters.invoiceNumber === "" || invoice.invoiceNumber.includes(filters.invoiceNumber)) &&
-        (filters.clientName === "" || invoice.clientName.toLowerCase().includes(filters.clientName.toLowerCase())) &&
-        (filters.clientEmail === "" || invoice.clientEmail.toLowerCase().includes(filters.clientEmail.toLowerCase())) &&
-        (filters.status === "" || invoice.status === filters.status) &&
-        (filters.paymentMethod === "" || invoice.paymentMethod === filters.paymentMethod) &&
-        (filters.category === "" || invoice.category === filters.category) &&
-        (filters.tags === "" || invoice.tags.some(tag => tag.toLowerCase().includes(filters.tags.toLowerCase())))
-      );
+      if (filters.clientName && !invoice.clientName?.toLowerCase().includes(filters.clientName.toLowerCase())) {
+        return false;
+      }
+
+      if (filters.invoiceNumber && !invoice.invoiceNumber?.includes(filters.invoiceNumber)) {
+        return false;
+      }
+
+      if (filters.clientEmail && !invoice.clientEmail?.toLowerCase().includes(filters.clientEmail.toLowerCase())) {
+        return false;
+      }
+
+      if (filters.status && invoice.status !== filters.status) {
+        return false;
+      }
+
+      if (filters.paymentMethod && invoice.paymentMethod !== filters.paymentMethod) {
+        return false;
+      }
+
+      if (filters.category && invoice.category !== filters.category) {
+        return false;
+      }
+
+      if (filters.tags.length > 0 && !invoice.tags?.some(tag => filters.tags.includes(tag))) {
+        return false;
+      }
+
+      return true;
     })
     .sort((a, b) => {
+      if (!a[sortBy] || !b[sortBy]) return 0;
+
       if (["amount", "issueDate", "dueDate"].includes(sortBy)) {
-        const aValue = sortBy === "amount" ? a[sortBy] : new Date(a[sortBy]);
-        const bValue = sortBy === "amount" ? b[sortBy] : new Date(b[sortBy]);
-        return sortDirection === "asc" ? aValue - bValue : bValue - aValue;
+        return sortDirection === "asc"
+          ? new Date(a[sortBy]) - new Date(b[sortBy])
+          : new Date(b[sortBy]) - new Date(a[sortBy]);
       }
+
       return sortDirection === "asc"
-        ? a[sortBy].localeCompare(b[sortBy])
-        : b[sortBy].localeCompare(a[sortBy]);
+        ? (a[sortBy] || "").localeCompare(b[sortBy] || "")
+        : (b[sortBy] || "").localeCompare(a[sortBy] || "");
     });
 
   const handleLoadMore = () => {
     dispatch(loadMoreInvoices());
   };
 
-  if (status === "loading") return <p>Loading invoices...</p>;
-  if (status === "failed") return <p>Error loading invoices.</p>;
+  if (status === "loading") return <p>🔄 Loading invoices...</p>;
+  if (status === "failed") return <p>❌ Error loading invoices.</p>;
 
   return (
     <div>
       <div className={styles.invoiceList}>
-        {filteredInvoices.slice(0, visibleInvoices).map((invoice) => (
-          <Card key={invoice.invoiceId} invoice={invoice} />
-        ))}
+        {filteredInvoices.length > 0 ? (
+          filteredInvoices.slice(0, visibleInvoices).map((invoice) => (
+            <Card key={invoice.invoiceId || invoice.id} invoice={invoice} />
+          ))
+        ) : (
+          <p>⚠️ No invoices found. Check filters or data.</p>
+        )}
       </div>
-
-      {filteredInvoices.length === 0 && <p>No invoices match the applied filters.</p>}
 
       {visibleInvoices < filteredInvoices.length && (
         <div className={styles.loadMoreContainer}>

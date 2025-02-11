@@ -1,52 +1,87 @@
-import { useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setFilter, clearFilters, toggleFilter } from "../../../redux/filterSlice";
+import { setFilter, toggleFilter } from "../../../redux/filterSlice";
 import { FiX } from "react-icons/fi";
 import styles from "./FilterModal.module.css";
 
 const FilterModal = () => {
   const dispatch = useDispatch();
-  const isFilterOpen = useSelector((state) => state.filter.isFilterOpen);
-  const filters = useSelector((state) => state.filter.filters);
+  const isOpen = useSelector((state) => state.filter.isFilterOpen);
+  
+  const [localFilters, setLocalFilters] = useState({
+    invoiceNumber: "",
+    clientName: "",
+    clientEmail: "",
+    status: "",
+    paymentMethod: "",
+    category: "",
+    tags: [],
+    amount: "",
+  });
+
+  // Log quando o modal é aberto
+  useEffect(() => {
+    if (isOpen) {
+      setLocalFilters({
+        invoiceNumber: "",
+        clientName: "",
+        clientEmail: "",
+        status: "",
+        paymentMethod: "",
+        category: "",
+        tags: [],
+        amount: "",
+      });
+    }
+  }, [isOpen]);
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    dispatch(setFilter({ field: name, value }));
+    const { name, value, multiple, options, type } = e.target;
+    let newValue = value;
+
+    if (multiple) {
+      newValue = Array.from(options)
+        .filter((option) => option.selected)
+        .map((option) => option.value);
+    }
+
+    if (type === "number") {
+      newValue = value ? parseFloat(value) : "";
+    }
+    setLocalFilters((prev) => ({ ...prev, [name]: newValue }));
   };
 
   const handleClear = () => {
-    dispatch(clearFilters());
+    setLocalFilters({
+      invoiceNumber: "",
+      clientName: "",
+      clientEmail: "",
+      status: "",
+      paymentMethod: "",
+      category: "",
+      tags: [],
+      amount: "",
+    });
   };
 
   const handleClose = useCallback(() => {
-    dispatch(clearFilters());
     dispatch(toggleFilter());
+    handleClear();
   }, [dispatch]);
-
   const handleApply = () => {
-    dispatch(toggleFilter());
+    dispatch(setFilter({ field: "all", value: localFilters }));
+    dispatch(toggleFilter()); // Fecha o modal após aplicar os filtros
+  };
+  
+
+  const handleOverlayClick = (e) => {
+    if (e.target.classList.contains(styles.modalOverlay)) {
+      handleClose();
+    }
   };
 
-  useEffect(() => {
-    if (isFilterOpen) {
-      dispatch(clearFilters());
-    }
-  }, [isFilterOpen, dispatch]);
-
-  
-  useEffect(() => {
-    const handleEsc = (e) => {
-      if (e.key === "Escape") {
-        handleClose();
-      }
-    };
-
-    window.addEventListener("keydown", handleEsc);
-    return () => window.removeEventListener("keydown", handleEsc);
-  }, [handleClose]);
-
   return (
-    <div className={styles.modalOverlay}>
+    <div className={styles.modalOverlay} onClick={handleOverlayClick}>
       <div className={styles.modal}>
         <button onClick={handleClose} className={styles.closeButton} aria-label="Close filter modal">
           <FiX />
@@ -59,7 +94,7 @@ const FilterModal = () => {
           <input
             type="text"
             name="invoiceNumber"
-            value={filters.invoiceNumber}
+            value={localFilters.invoiceNumber}
             onChange={handleInputChange}
             placeholder="Search by invoice number"
           />
@@ -70,7 +105,7 @@ const FilterModal = () => {
           <input
             type="text"
             name="clientName"
-            value={filters.clientName}
+            value={localFilters.clientName}
             onChange={handleInputChange}
             placeholder="Search by client name"
           />
@@ -81,7 +116,7 @@ const FilterModal = () => {
           <input
             type="text"
             name="clientEmail"
-            value={filters.clientEmail}
+            value={localFilters.clientEmail}
             onChange={handleInputChange}
             placeholder="Search by email"
           />
@@ -89,7 +124,7 @@ const FilterModal = () => {
 
         <div className={styles.inputGroup}>
           <label>Status:</label>
-          <select name="status" value={filters.status} onChange={handleInputChange}>
+          <select name="status" value={localFilters.status} onChange={handleInputChange}>
             <option value="">All</option>
             <option value="Pending">Pending</option>
             <option value="Paid">Paid</option>
@@ -99,7 +134,7 @@ const FilterModal = () => {
 
         <div className={styles.inputGroup}>
           <label>Payment Method:</label>
-          <select name="paymentMethod" value={filters.paymentMethod} onChange={handleInputChange}>
+          <select name="paymentMethod" value={localFilters.paymentMethod} onChange={handleInputChange}>
             <option value="">All</option>
             <option value="Cash">Cash</option>
             <option value="Credit Card">Credit Card</option>
@@ -110,7 +145,7 @@ const FilterModal = () => {
 
         <div className={styles.inputGroup}>
           <label>Category:</label>
-          <select name="category" value={filters.category} onChange={handleInputChange}>
+          <select name="category" value={localFilters.category} onChange={handleInputChange}>
             <option value="">All</option>
             <option value="Maintenance">Maintenance</option>
             <option value="Development">Development</option>
@@ -121,12 +156,7 @@ const FilterModal = () => {
 
         <div className={styles.inputGroup}>
           <label>Tags:</label>
-          <select
-            name="tags"
-            value={filters.tags}
-            onChange={handleInputChange}
-            multiple
-          >
+          <select name="tags" value={localFilters.tags} onChange={handleInputChange} multiple>
             <option value="Urgent">Urgent</option>
             <option value="Recurring">Recurring</option>
             <option value="Delayed">Delayed</option>
@@ -140,7 +170,7 @@ const FilterModal = () => {
           <input
             type="number"
             name="amount"
-            value={filters.amount || ""}
+            value={localFilters.amount || ""}
             onChange={handleInputChange}
             placeholder="Search by amount"
           />
